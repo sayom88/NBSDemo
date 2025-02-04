@@ -1,14 +1,18 @@
 package com.example;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.testng.Assert;
+
+import java.time.Duration;
 
 public class SeleniumTests {
 
@@ -16,14 +20,11 @@ public class SeleniumTests {
 
     @BeforeMethod
     public void setUp() {
-        // Set up ChromeOptions to run in headless mode and avoid user data conflicts
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--remote-allow-origins=*"); // Avoids potential origin-related failures
 
-        // Set up the ChromeDriver with the modified options
         System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
         driver = new ChromeDriver(options);
     }
@@ -31,11 +32,18 @@ public class SeleniumTests {
     @Test
     public void testGoogleSearch() {
         driver.get("https://www.google.com");
+
         WebElement searchBox = driver.findElement(By.name("q"));
         searchBox.sendKeys("GitHub Actions Selenium");
         searchBox.submit();
 
-        Assert.assertTrue(driver.getTitle().contains("GitHub Actions Selenium"));
+        // Wait for the page title to contain the search query
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.titleContains("GitHub Actions Selenium"));
+
+        // Assert the search results page title
+        Assert.assertTrue(driver.getTitle().contains("GitHub Actions Selenium"), 
+                          "Page title did not contain the search query.");
     }
 
     @AfterMethod
