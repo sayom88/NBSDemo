@@ -1,0 +1,40 @@
+name: Selenium PoC CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install Google Chrome
+        run: sudo apt-get install -y google-chrome-stable
+
+      - name: Install Chromedriver
+        run: sudo apt-get install -y chromium-chromedriver
+
+      - name: Display Chromedriver version
+        run: chromedriver --version
+
+      - name: Setup Maven
+        run: mvn --version
+
+      - name: Build and Run Tests
+        run: |
+          mvn clean install
+          mvn test
