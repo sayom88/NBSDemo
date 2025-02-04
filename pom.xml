@@ -23,12 +23,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-    <groupId>org.seleniumhq.selenium</groupId>
-    <artifactId>selenium-devtools-v132</artifactId>
-    <version>4.8.0</version>
-        </dependency>
-
     </dependencies>
 
     <build>
