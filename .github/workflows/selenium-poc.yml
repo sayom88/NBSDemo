@@ -22,11 +22,20 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
+      # Install the stable version of Chrome
       - name: Install Google Chrome
         run: sudo apt-get install -y google-chrome-stable
 
-      - name: Install Chromedriver
-        run: sudo apt-get install -y chromium-chromedriver
+      # Dynamically install the matching ChromeDriver version
+      - name: Download matching ChromeDriver version
+        run: |
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          echo "Detected Chrome version: $CHROME_VERSION"
+          CHROMEDRIVER_URL=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          wget https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_URL}/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/bin/chromedriver
+          sudo chmod +x /usr/bin/chromedriver
 
       - name: Display Chromedriver version
         run: chromedriver --version
