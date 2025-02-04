@@ -1,13 +1,14 @@
 package com.example;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.Assert;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 
 public class SeleniumTests {
 
@@ -15,8 +16,16 @@ public class SeleniumTests {
 
     @BeforeMethod
     public void setUp() {
+        // Set up ChromeOptions to run in headless mode and avoid user data conflicts
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--remote-allow-origins=*"); // Avoids potential origin-related failures
+
+        // Set up the ChromeDriver with the modified options
         System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
     }
 
     @Test
